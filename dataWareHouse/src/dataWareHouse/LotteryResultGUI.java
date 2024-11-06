@@ -6,7 +6,16 @@ import java.sql.*;
 import java.util.Vector;
 
 public class LotteryResultGUI {
-	private static final String DB_URL = "jdbc:sqlserver://DESKTOP-CDO0SQ2\\MAYAO;databaseName=LotteryResults;user=sang;password=sang;encrypt=true;trustServerCertificate=true";
+	// with data
+	private static final String DB_URL = "jdbc:sqlserver://DESKTOP-CDO0SQ2\\MAYAO;databaseName=LotteryResultsWithData;user=sang;password=sang;encrypt=true;trustServerCertificate=true";
+
+	// no data
+//	private static final String DB_URL = "jdbc:sqlserver://DESKTOP-CDO0SQ2\\MAYAO;databaseName=LotteryResultsNoData;user=sang;password=sang;encrypt=true;trustServerCertificate=true";
+
+	// fail connect
+//	private static final String DB_URL = "jdbc:sqlserver://DESKTOP-CDO0SQ2\\MAYAO;databaseName=LotterResltsWithData;user=sang;password=sang;encrypt=true;trustServerCertificate=true";
+
+	private final EmailNotifier emailNotifier = new EmailNotifier();
 
 	public static void main(String[] args) {
 		SwingUtilities.invokeLater(() -> {
@@ -31,21 +40,25 @@ public class LotteryResultGUI {
 		frame.setVisible(true);
 	}
 
-	// Phương thức non-static, có thể sử dụng DB_URL instance
+	// Phương thức loadData
 	private void loadData(DefaultTableModel tableModel) {
 		System.out.println("Begin to load data from database...");
 
 		try (Connection conn = DriverManager.getConnection(DB_URL)) {
-			System.out.println("Database connect success");
+			System.out.println("Database connected successfully");
 
-			// Thực hiện truy vấn để lấy dữ liệu từ các bảng FactPrize, DimDate và
-			// DimLocation
-			String query = "SELECT d.DateOfTake, l.LocationName, "
-					+ "s.Prize8, s.Prize7, s.Prize6_1, s.Prize6_2, s.Prize6_3, s.Prize5, "
-					+ "s.Prize4_1, s.Prize4_2, s.Prize4_3, s.Prize4_4, s.Prize4_5, s.Prize4_6, s.Prize4_7, "
-					+ "s.Prize3_1, s.Prize3_2, s.Prize2, s.Prize1, s.SpecialPrize " + "FROM StagingPrize s "
-					+ "JOIN DimDate d ON s.SampleDate = d.DateOfTake "
-					+ "JOIN DimLocation l ON s.Province = l.LocationName";
+			// Cập nhật truy vấn để lấy dữ liệu từ FactPrize sử dụng các cột DateID và
+			// LocationID từ bảng khác để lấy dateid và locationid thành tên
+//			String query = "SELECT d.DateOfTake, l.LocationName, "
+//					+ "f.Prize8, f.Prize7, f.Prize6_1, f.Prize6_2, f.Prize6_3, f.Prize5, "
+//					+ "f.Prize4_1, f.Prize4_2, f.Prize4_3, f.Prize4_4, f.Prize4_5, f.Prize4_6, f.Prize4_7, "
+//					+ "f.Prize3_1, f.Prize3_2, f.Prize2, f.Prize1, f.SpecialPrize " + "FROM FactPrize f "
+//					+ "JOIN DimDate d ON f.DateID = d.DateID " + "JOIN DimLocation l ON f.LocationID = l.LocationID";
+
+			// Truy vấn để lấy tất cả dữ liệu từ FactPrize
+			String query = "SELECT DateID, LocationID, SpecialPrize, Prize1, Prize2, Prize3_1, Prize3_2, "
+					+ "Prize4_1, Prize4_2, Prize4_3, Prize4_4, Prize4_5, Prize4_6, Prize4_7, "
+					+ "Prize5, Prize6_1, Prize6_2, Prize6_3, Prize7, Prize8 FROM FactPrize";
 
 			Statement stmt = conn.createStatement();
 			ResultSet rs = stmt.executeQuery(query);
@@ -59,11 +72,16 @@ public class LotteryResultGUI {
 			}
 			tableModel.setColumnIdentifiers(columnNames);
 
-			// Kiểm tra xem có dữ liệu hay không
+			// Kiểm tra xem có dữ liệu hay không, nếu không có gửi email
 			if (!rs.isBeforeFirst()) {
 				JOptionPane.showMessageDialog(null, "Không có dữ liệu từ cơ sở dữ liệu.", "Thông báo",
 						JOptionPane.INFORMATION_MESSAGE);
 				System.out.println("No data to show.");
+
+				// Gửi email thông báo không có dữ liệu
+				EmailNotifier emailNotifier = new EmailNotifier();
+				emailNotifier.sendNoDataNotification();
+
 				return;
 			}
 
@@ -76,13 +94,18 @@ public class LotteryResultGUI {
 				tableModel.addRow(row);
 			}
 
-			System.out.println("Data show success.");
+			System.out.println("Data loaded successfully.");
 
 		} catch (SQLException e) {
 			e.printStackTrace();
-			System.err.println("Lỗi khi tải dữ liệu từ cơ sở dữ liệu: " + e.getMessage());
+			System.err.println("Error loading data from the database: " + e.getMessage());
+
+			// Gửi email khi xảy ra lỗi
+			emailNotifier.sendErrorNotification(e.getMessage());
+
 			JOptionPane.showMessageDialog(null, "Lỗi tải dữ liệu: " + e.getMessage(), "Lỗi cơ sở dữ liệu",
 					JOptionPane.ERROR_MESSAGE);
 		}
 	}
+
 }
