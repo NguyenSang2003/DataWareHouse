@@ -5,14 +5,19 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-
+import java.io.OutputStreamWriter;
+import java.io.Writer;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
+
+
 public class Crawler {
-    public static void main(String[] args) {
+	 
+    public static void main(String[] args) throws IOException {
         SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
         Calendar calendar = Calendar.getInstance();
 
@@ -20,17 +25,22 @@ public class Crawler {
         calendar.set(2024, Calendar.SEPTEMBER, 1);
 
         // Đường dẫn đến file CSV
-        String csvFile = "ket_qua_xo_so_t9_2.csv";
+        String csvFile = "ket_qua_xo_so_t9.csv";
+
+        // Tạo writer để ghi vào file CSV với BOM
+        try (Writer writer1 = new OutputStreamWriter(new FileOutputStream(csvFile), "UTF-8")) {
+            // Ghi BOM vào file
+            writer1.write('\uFEFF');
 
         // Tạo writer để ghi vào file CSV
         try (CSVWriter writer = new CSVWriter(new FileWriter(csvFile))) {
             // Ghi header vào CSV
-            String[] header = {"Ngày", "Tỉnh", "Giải 8", "Giải 7", 
-                               "Giải 6-1", "Giải 6-2", "Giải 6-3", 
-                               "Giải 5", "Giải 4-1", "Giải 4-2", "Giải 4-3", 
-                               "Giải 4-4", "Giải 4-5", "Giải 4-6", "Giải 4-7",
-                               "Giải 3-1", "Giải 3-2", 
-                               "Giải 2", "Giải 1", "Giải Đặc Biệt"};
+            String[] header = {"","DateID", "LocationID", "Prize 8", "Prize 7", 
+                               "Prize 6-1", "Prize 6-2", "Prize 6-3", 
+                               "Prize 5", "Prize 4-1", "Prize 4-2", "Prize 4-3", 
+                               "Prize 4-4", "Prize 4-5", "Prize 4-6", "Prize 4-7",
+                               "Prize 3-1", "Prize3-2", 
+                               "Prize2", "Prize1", "SpecialPrize"};
             writer.writeNext(header);
 
             // Lặp qua các ngày trong tháng 9
@@ -88,33 +98,20 @@ public class Crawler {
                             String Giai2 = table.select("td.giai2").text();
                             String Giai1 = table.select("td.giai1").text();
                             String GiaiDB = table.select("td.giaidb").text();
-
-                            // Ghi dữ liệu vào CSV
-//                            String[] data = {
-//                                dateTitle,
-//                                province,
-//                                Giai8,
-//                                Giai7,
-//                                Giai6[0], Giai6[1], Giai6[2],
-//                                Giai5,
-//                                Giai4[0], Giai4[1], Giai4[2], Giai4[3], Giai4[4], Giai4[5], Giai4[6],
-//                                Giai3[0], Giai3[1],
-//                                Giai2,
-//                                Giai1,
-//                                GiaiDB
-//                            };
+                            
                             String[] data = {
                             	    dateTitle,
                             	    province,
-                            	    "'" + Giai8,    
-                            	    "'" + Giai7,
-                            	    "'" + Giai6[0], "'" + Giai6[1], "'" + Giai6[2],
-                            	    "'" + Giai5,
-                            	    "'" + Giai4[0], "'" + Giai4[1], "'" + Giai4[2], "'" + Giai4[3], "'" + Giai4[4], "'" + Giai4[5], "'" + Giai4[6],
-                            	    "'" + Giai3[0], "'" + Giai3[1],
-                            	    "'" + Giai2,
-                            	    "'" + Giai1,
-                            	    "'" + GiaiDB
+                            	    "=\"" + Giai8 + "\"",
+                            	    "=\"" + Giai7 + "\"",
+                            	    "=\"" + Giai6[0] + "\"", "=\"" + Giai6[1] + "\"", "=\"" + Giai6[2] + "\"",
+                            	    "=\"" + Giai5 + "\"",
+                            	    "=\"" + Giai4[0] + "\"", "=\"" + Giai4[1] + "\"", "=\"" + Giai4[2] + "\"", 
+                            	    "=\"" + Giai4[3] + "\"", "=\"" + Giai4[4] + "\"", "=\"" + Giai4[5] + "\"", "=\"" + Giai4[6] + "\"",
+                            	    "=\"" + Giai3[0] + "\"", "=\"" + Giai3[1] + "\"",
+                            	    "=\"" + Giai2 + "\"",
+                            	    "=\"" + Giai1 + "\"",
+                            	    "=\"" + GiaiDB + "\""
                             	};
                             writer.writeNext(data);
 
@@ -137,4 +134,6 @@ public class Crawler {
             System.out.println("Lỗi khi ghi vào file CSV: " + e.getMessage());
         }
     }
+}
+  
 }
