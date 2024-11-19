@@ -8,19 +8,17 @@ import java.time.format.DateTimeFormatter;
 
 public class Logger {
 
-    private static final String LOG_FILE = "crawler_log.txt"; // Tên file log
+    private static final String LOG_FILE = "crawler_log.txt"; 
 
     // Ghi log thành công
     public static void logSuccess(String message) {
         log("SUCCESS", message);
     }
-
     // Ghi log thất bại
     public static void logFailure(String message) {
         log("FAILURE", message);
     }
 
-    // Ghi log vào file với mức độ và thông điệp
     private static void log(String level, String message) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(LOG_FILE, true))) {
             String timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
