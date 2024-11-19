@@ -26,12 +26,19 @@ public class Crawler {
 
         // Đường dẫn đến file CSV
         String csvFile = "ket_qua_xo_so_t9.csv";
-
+        
+        // Ghi log khi bắt đầu quá trình crawl dữ liệu
+        Logger.logSuccess("Crawling process started.");
+  
         // Tạo writer để ghi vào file CSV với BOM
         try (Writer writer1 = new OutputStreamWriter(new FileOutputStream(csvFile), "UTF-8")) {
             // Ghi BOM vào file
             writer1.write('\uFEFF');
-
+        } catch (IOException e) {
+            // Ghi log lỗi nếu có sự cố khi tạo writer
+            Logger.logFailure("Failed to write BOM to file: " + e.getMessage());
+            return; // Dừng quá trình nếu gặp lỗi
+        }
         // Tạo writer để ghi vào file CSV
         try (CSVWriter writer = new CSVWriter(new FileWriter(csvFile))) {
             // Ghi header vào CSV
@@ -119,6 +126,7 @@ public class Crawler {
                         }
                     } catch (Exception e) {
                         System.out.println("Không có kết quả cho ngày: " + dateString);
+                        Logger.logFailure("Error processing data for date " + dateString + ": " + e.getMessage());
                     }
                 }
 
@@ -130,10 +138,14 @@ public class Crawler {
                     break;
                 }
             }
+         // Ghi log khi hoàn thành quá trình
+            Logger.logSuccess("Crawling process completed successfully.");
         } catch (IOException e) {
             System.out.println("Lỗi khi ghi vào file CSV: " + e.getMessage());
+         // Ghi log thất bại khi gặp lỗi trong khi ghi dữ liệu vào CSV
+            Logger.logFailure("Failed to write to CSV file: " + e.getMessage());
         }
     }
 }
   
-}
+
