@@ -1,4 +1,4 @@
-package dataWareHouse;
+package ult;
 
 import javax.mail.*;
 import javax.mail.internet.InternetAddress;
@@ -30,7 +30,7 @@ public class EmailNotifier {
 			senderPassword = prop.getProperty("senderPassword");
 		} catch (IOException e) {
 			e.printStackTrace();
-			System.err.println("Failed to load configuration file.");
+			System.err.println("B1.2: Failed to load configuration file.");
 		}
 	}
 
