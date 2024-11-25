@@ -92,9 +92,8 @@ public class DatabaseManager {
             // Kết nối tới cơ sở dữ liệu
             conn = connectToDatabase();
 
-            // Chuẩn bị câu lệnh
             pstmt = conn.prepareStatement(sql);
-            pstmt.setString(1, message); // Gán nội dung lỗi vào tham số
+            pstmt.setString(1, message);
 
             // Thực thi câu lệnh
             int index = pstmt.executeUpdate();
