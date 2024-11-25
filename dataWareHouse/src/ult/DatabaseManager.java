@@ -95,7 +95,7 @@ public class DatabaseManager {
             pstmt = conn.prepareStatement(sql);
             pstmt.setString(1, message);
 
-            // Thực thi câu lệnh
+            // Thực thi câu lệnh sql
             int index = pstmt.executeUpdate();
             return index > 0;
         } catch (SQLException e) {
