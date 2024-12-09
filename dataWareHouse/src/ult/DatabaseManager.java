@@ -83,25 +83,24 @@ public class DatabaseManager {
 
     // Lưu log vào cơ sở dữ liệu
     public static boolean saveLog(String message) {
-        String sql = "INSERT INTO log (message, create_date) VALUES (?, GETDATE())"; // Câu lệnh SQL để thêm log
+        String sql = "INSERT INTO log (Message) VALUES (?)"; // Câu lệnh SQL để thêm log
 
-        Connection conn = null;
-        PreparedStatement pstmt = null;
+        // Sử dụng try-with-resources để tự động đóng tài nguyên
+        try (Connection conn = connectToDatabase();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
-        try {
-            // Kết nối tới cơ sở dữ liệu
-            conn = connectToDatabase();
-
-            pstmt = conn.prepareStatement(sql);
+            // Gán giá trị cho tham số
             pstmt.setString(1, message);
 
-            // Thực thi câu lệnh sql
+            // Thực thi câu lệnh SQL
             int index = pstmt.executeUpdate();
+
+            // Trả về true nếu thêm thành công
             return index > 0;
+
         } catch (SQLException e) {
             System.err.println("Lỗi khi ghi log: " + e.getMessage());
             return false;
-
         }
     }
 
@@ -116,6 +115,5 @@ public class DatabaseManager {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
     }
 }
