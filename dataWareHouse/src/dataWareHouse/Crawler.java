@@ -1,6 +1,9 @@
 package dataWareHouse;
 
 import com.opencsv.CSVWriter;
+
+import ult.Logger;
+
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -43,6 +46,7 @@ public class Crawler {
                              "Prize 3-1", "Prize3-2", 
                              "Prize2", "Prize1", "SpecialPrize"};
           writer.writeNext(header);
+          Logger.log("Đã ghi header vào file CSV.");
             // Lặp qua các ngày trong tháng 9
             while (true) {
                 String dateString = sdf.format(calendar.getTime());
@@ -125,6 +129,7 @@ public class Crawler {
                                         writer.writeNext(data);
 
                                         System.out.println("=================");
+                                        Logger.log("Đã ghi dữ liệu cho tỉnh: " + province);
                                     }
                                 }
                             }
@@ -144,9 +149,11 @@ public class Crawler {
             }
 
         } catch (IOException e) {
+        	 Logger.log("Lỗi khi ghi vào file CSV: " + e.getMessage());
             System.out.println("Lỗi khi ghi vào file CSV: " + e.getMessage());
            
         }
     }
+        Logger.log("Quá trình crawl dữ liệu hoàn tất.");
 }
 }
