@@ -111,16 +111,16 @@ public class Crawler {
                                         String[] data = {
                                         		  "=\"" + dateText + "\"",
                                                 province,
-                                                "=\"" + Giai8 + "\"",
-                                                "=\"" + Giai7 + "\"",
-                                                "=\"" + Giai6[0] + "\"", "=\"" + Giai6[1] + "\"", "=\"" + Giai6[2] + "\"",
-                                                "=\"" + Giai5 + "\"",
-                                                "=\"" + Giai4[0] + "\"", "=\"" + Giai4[1] + "\"", "=\"" + Giai4[2] + "\"",
-                                                "=\"" + Giai4[3] + "\"", "=\"" + Giai4[4] + "\"", "=\"" + Giai4[5] + "\"", "=\"" + Giai4[6] + "\"",
-                                                "=\"" + Giai3[0] + "\"", "=\"" + Giai3[1] + "\"",
-                                                "=\"" + Giai2 + "\"",
-                                                "=\"" + Giai1 + "\"",
-                                                "=\"" + GiaiDB + "\""
+                                                 Giai8 ,
+                                                 Giai7 ,
+                                                 Giai6[0] ,  Giai6[1] , Giai6[2] ,
+                                                 Giai5 ,
+                                                 Giai4[0] ,  Giai4[1] ,  Giai4[2],
+                                                Giai4[3],  Giai4[4] ,  Giai4[5] , Giai4[6] ,
+                                               Giai3[0] ,  Giai3[1] ,
+                                                 Giai2 ,
+                                                 Giai1 ,
+                                                 GiaiDB 
                                             };
                                         writer.writeNext(data);
 
