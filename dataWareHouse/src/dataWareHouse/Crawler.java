@@ -109,7 +109,7 @@ public class Crawler {
                                         String GiaiDB = table.select("td.giaidb").text();
 
                                         String[] data = {
-                                        		  "=\"" + dateText + "\"",
+                                        		 dateText,
                                                 province,
                                                  Giai8 ,
                                                  Giai7 ,
