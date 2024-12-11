@@ -66,7 +66,7 @@ public class ETLData {
 
 	}
 
-// load CrawData staging
+// 4.2 load CrawData_Staging
 	public boolean loadCrawData_Staging(String Path) {
 		ETLData etl = new ETLData();
 		Path = "D:\\DataWareHouse\\Data\\ket_qua_xo_so_t8.csv";
