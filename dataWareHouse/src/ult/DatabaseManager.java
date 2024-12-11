@@ -11,7 +11,9 @@ public class DatabaseManager {
 
     // Đọc thông tin kết nối từ file config.properties
     private static String DB_URL;
+    private static Logger logger = new Logger();
 
+    // Hàm khởi tạo đối tượng DatabaseManager
     static {
         try {
             // B1 Đọc thông tin cấu hình từ file properties
@@ -32,6 +34,7 @@ public class DatabaseManager {
                     dbName, dbUser, dbPassword, dbEncrypt, dbTrustServerCertificate);
 
             System.out.println("B1: Loading database configuration success.");
+//            logger.log("B1: Loading database configuration success.");
         } catch (IOException e) {
             System.err.println("B1: Error loading database configuration: " + e.getMessage());
             emailNotifier.sendErrorNotification("B1: Error loading database configuration: " + e.getMessage());
@@ -46,7 +49,8 @@ public class DatabaseManager {
 
         try {
             sharedConnection = DriverManager.getConnection(DB_URL);
-            System.out.println("B1.1: Database connected successfully");
+
+//            System.out.println("B1.1: Database connected successfully");
             return sharedConnection;
         } catch (SQLException e) {
             System.out.println("B1.1: Failed to connect to the database: " + e.getMessage());
@@ -64,6 +68,7 @@ public class DatabaseManager {
         try {
             // Kết nối cơ sở dữ liệu
             conn = connectToDatabase();
+            logger.log("B1.1: Database connected successfully");
 
             // Truy vấn cơ sở dữ liệu
             String query = "SELECT DateID, LocationID, SpecialPrize, Prize1, Prize2, Prize3_1, Prize3_2, "
@@ -84,11 +89,11 @@ public class DatabaseManager {
     // Lưu log vào cơ sở dữ liệu
     public static boolean saveLog(String message) {
         String sql = "INSERT INTO log (Message) VALUES (?)"; // Câu lệnh SQL để thêm log
-
-        // Sử dụng try-with-resources để tự động đóng tài nguyên
-        try (Connection conn = connectToDatabase();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
-
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        try {
+            conn = connectToDatabase();
+            pstmt = conn.prepareStatement(sql);
             // Gán giá trị cho tham số
             pstmt.setString(1, message);
 
