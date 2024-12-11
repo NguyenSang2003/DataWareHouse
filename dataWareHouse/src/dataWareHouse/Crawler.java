@@ -35,16 +35,19 @@ public class Crawler {
         try (Writer writer1 = new OutputStreamWriter(new FileOutputStream(csvFile), "UTF-8")) {
           // Ghi BOM vào file
           writer1.write('\uFEFF');
-
+          writer1.flush();
       // Tạo writer để ghi vào file CSV
-      try (CSVWriter writer = new CSVWriter(new FileWriter(csvFile))) {
+      try (CSVWriter writer = new CSVWriter(new FileWriter(csvFile, true))) {
           // Ghi header vào CSV
-          String[] header = {"","DateID", "LocationID", "Prize 8", "Prize 7", 
-                             "Prize 6-1", "Prize 6-2", "Prize 6-3", 
-                             "Prize 5", "Prize 4-1", "Prize 4-2", "Prize 4-3", 
-                             "Prize 4-4", "Prize 4-5", "Prize 4-6", "Prize 4-7",
-                             "Prize 3-1", "Prize3-2", 
-                             "Prize2", "Prize1", "SpecialPrize"};
+    	  String[] header = {
+    			  	"SampleDate", "Province", 
+    			    "Prize8", "Prize7", 
+    			    "Prize6_3", "Prize6_2", "Prize6_1", 
+    			    "Prize5", 
+    			    "Prize4_7", "Prize4_6", "Prize4_5", "Prize4_4", "Prize4_3", "Prize4_2", "Prize4_1", 
+    			    "Prize3_2", "Prize3_1", 
+    			    "Prize2", "Prize1", "SpecialPrize"
+    			};
           writer.writeNext(header);
           Logger.log("Đã ghi header vào file CSV.");
             // Lặp qua các ngày trong tháng 9
@@ -59,12 +62,12 @@ public class Crawler {
                         Elements dateElements = doc.select("td.ngay a");
 
                         for (Element dateElement : dateElements) {
-                            String dateText = dateElement.text().trim();
+                            String SampleDate = dateElement.text().trim();
 
                             // Kiểm tra định dạng và khoảng thời gian
-                            if (dateText.matches("\\d{2}/\\d{2}/\\d{4}")) {
+                            if (SampleDate.matches("\\d{2}/\\d{2}/\\d{4}")) {
                                 SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-                                Date date = dateFormat.parse(dateText);
+                                Date date = dateFormat.parse(SampleDate);
 
                                 Calendar cal = Calendar.getInstance();
                                 cal.setTime(date);
@@ -72,7 +75,7 @@ public class Crawler {
                                 int month = cal.get(Calendar.MONTH);
 
                                 if (year == 2024 && month == Calendar.SEPTEMBER) {
-                                    System.out.println("Đang xử lý ngày: " + dateText);
+                                    System.out.println("Đang xử lý ngày: " + SampleDate);
 
                                     // Lấy các bảng liên quan
                                     Elements tables = doc.select("table.rightcl");
@@ -113,18 +116,17 @@ public class Crawler {
                                         String GiaiDB = table.select("td.giaidb").text();
 
                                         String[] data = {
-                                        		 dateText,
-                                                province,
-                                                 Giai8 ,
-                                                 Giai7 ,
-                                                 Giai6[0] ,  Giai6[1] , Giai6[2] ,
-                                                 Giai5 ,
-                                                 Giai4[0] ,  Giai4[1] ,  Giai4[2],
-                                                Giai4[3],  Giai4[4] ,  Giai4[5] , Giai4[6] ,
-                                               Giai3[0] ,  Giai3[1] ,
-                                                 Giai2 ,
-                                                 Giai1 ,
-                                                 GiaiDB 
+                                        		 SampleDate,
+                                        		    province,
+                                        		    Giai8,
+                                        		    Giai7,
+                                        		    Giai6[2], Giai6[1], Giai6[0],
+                                        		    Giai5,
+                                        		    Giai4[6], Giai4[5], Giai4[4], Giai4[3], Giai4[2], Giai4[1], Giai4[0],
+                                        		    Giai3[1], Giai3[0],
+                                        		    Giai2,
+                                        		    Giai1,
+                                        		    GiaiDB
                                             };
                                         writer.writeNext(data);
 
@@ -154,6 +156,5 @@ public class Crawler {
            
         }
     }
-        Logger.log("Quá trình crawl dữ liệu hoàn tất.");
 }
 }
