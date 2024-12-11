@@ -2,7 +2,9 @@ package dataWareHouse;
 
 import com.opencsv.CSVWriter;
 
+
 import ult.Logger;
+
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -29,12 +31,15 @@ public class Crawler {
         // Đường dẫn đến file CSV
         String csvFile = "ket_qua_xo_so_t9.csv";
 
+
        
+
 
         // Tạo writer để ghi vào file CSV với BOM
         try (Writer writer1 = new OutputStreamWriter(new FileOutputStream(csvFile), "UTF-8")) {
           // Ghi BOM vào file
           writer1.write('\uFEFF');
+
           writer1.flush();
       // Tạo writer để ghi vào file CSV
       try (CSVWriter writer = new CSVWriter(new FileWriter(csvFile, true))) {
@@ -50,6 +55,7 @@ public class Crawler {
     			};
           writer.writeNext(header);
           Logger.log("Đã ghi header vào file CSV.");
+
             // Lặp qua các ngày trong tháng 9
             while (true) {
                 String dateString = sdf.format(calendar.getTime());
@@ -62,6 +68,7 @@ public class Crawler {
                         Elements dateElements = doc.select("td.ngay a");
 
                         for (Element dateElement : dateElements) {
+
                             String SampleDate = dateElement.text().trim();
 
                             // Kiểm tra định dạng và khoảng thời gian
@@ -69,16 +76,19 @@ public class Crawler {
                                 SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
                                 Date date = dateFormat.parse(SampleDate);
 
+
                                 Calendar cal = Calendar.getInstance();
                                 cal.setTime(date);
                                 int year = cal.get(Calendar.YEAR);
                                 int month = cal.get(Calendar.MONTH);
 
                                 if (year == 2024 && month == Calendar.SEPTEMBER) {
+
                                     System.out.println("Đang xử lý ngày: " + SampleDate);
 
                                     // Lấy các bảng liên quan
                                     Elements tables = doc.select("table.rightcl");
+
                                     for (Element table : tables) {
                                         // Lấy tên tỉnh
                                         String province = table.select("td.tinh a").text();
@@ -116,6 +126,7 @@ public class Crawler {
                                         String GiaiDB = table.select("td.giaidb").text();
 
                                         String[] data = {
+
                                         		 SampleDate,
                                         		    province,
                                         		    Giai8,
@@ -127,11 +138,14 @@ public class Crawler {
                                         		    Giai2,
                                         		    Giai1,
                                         		    GiaiDB
+
                                             };
                                         writer.writeNext(data);
 
                                         System.out.println("=================");
+
                                         Logger.log("Đã ghi dữ liệu cho tỉnh: " + province);
+
                                     }
                                 }
                             }
@@ -151,6 +165,7 @@ public class Crawler {
             }
 
         } catch (IOException e) {
+
         	 Logger.log("Lỗi khi ghi vào file CSV: " + e.getMessage());
             System.out.println("Lỗi khi ghi vào file CSV: " + e.getMessage());
            
