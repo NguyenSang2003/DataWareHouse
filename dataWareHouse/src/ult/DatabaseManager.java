@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.sql.*;
 import java.util.Properties;
 
+import dataWareHouse.ETLData;
+
 public class DatabaseManager {
     private final static EmailNotifier emailNotifier = new EmailNotifier();
     private static Connection sharedConnection = null;
@@ -84,9 +86,9 @@ public class DatabaseManager {
     // Lưu log vào cơ sở dữ liệu
     public static boolean saveLog(String message) {
         String sql = "INSERT INTO log (Message) VALUES (?)"; // Câu lệnh SQL để thêm log
-
+        ETLData etl = new ETLData();
         // Sử dụng try-with-resources để tự động đóng tài nguyên
-        try (Connection conn = connectToDatabase();
+        try (Connection conn = etl.getConnect();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
             // Gán giá trị cho tham số

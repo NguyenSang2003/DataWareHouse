@@ -11,7 +11,7 @@ import java.util.Properties;
 
 public class EmailNotifier {
 
-	private final String recipientEmail = "21130143@st.hcmuaf.edu.vn"; // email người nhận
+	private String recipientEmail;
 
 	private String senderEmail;
 	private String senderPassword;
@@ -28,6 +28,7 @@ public class EmailNotifier {
 			// Đọc email và mật khẩu ứng dụng từ tệp config
 			senderEmail = prop.getProperty("senderEmail");
 			senderPassword = prop.getProperty("senderPassword");
+			recipientEmail = prop.getProperty("recipientEmail");
 		} catch (IOException e) {
 			e.printStackTrace();
 			System.err.println("B1.2: Failed to load configuration file.");
