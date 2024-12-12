@@ -1,8 +1,7 @@
 package dataWareHouse;
 
+import java.io.IOException;
 import java.sql.SQLException;
-
-import javax.swing.SwingUtilities;
 
 import ult.DatabaseManager;
 
@@ -14,16 +13,19 @@ import dataWareHouse.*;
 
 public class Main {
 
-//	b1: kết nối DB --> b2: crawl data --> b3: Load Staging --> b4: transform data --> b5: in lên GUI
 
-	public static void main(String[] args) throws SQLException {
+	public static void main(String[] args) throws IOException, SQLException {
+
+//	b1: kết nối DB --> b2: crawl data --> b3: Load Staging --> b4: transform data --> b5: in lên GUI
 		ETLData etl = new ETLData();
 		Logger log = new Logger();
 		// Bước 1: Kết nối đến cơ sở dữ liệu
 		DatabaseManager.connectToDatabase();
 
-		// Bước 2: crawl data từ web về
-
+		// Bước 2: Crawl data từ web về
+		Crawler crawler = new Crawler();
+		crawler.crawlLotteryData("ket_qua_xo_so_t9.csv", "01-09-2024", "30-09-2024");
+    
 		// Bước 3: Load stagging
 		etl.setDateFormat();
 		// 3.1 load craw data staging
@@ -75,9 +77,8 @@ public class Main {
 			// 4.3.1
 			log.log("4.3.1: load FactPrize faild");
 		}
-		
 
-		// Bước 5: Khởi tạo giao diện người dùng để hiển thị kết quả xổ số
+		// Bước 5: Hiển thị kết quả lên giao diện GUI
 		LotteryResultGUI gui = new LotteryResultGUI();
 		gui.createAndShowGUI();
 	}
