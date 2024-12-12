@@ -1,26 +1,27 @@
 package dataWareHouse;
 
+import java.io.IOException;
 import java.sql.SQLException;
-
-import javax.swing.SwingUtilities;
 
 import ult.DatabaseManager;
 
 public class Main {
 
-//	b1: kết nối DB --> b2: crawl data --> b3: Load Staging --> b4: transform data --> b5: in lên GUI
-
-	public static void main(String[] args) throws SQLException {
+	public static void main(String[] args) throws IOException, SQLException {
 		// Bước 1: Kết nối đến cơ sở dữ liệu
 		DatabaseManager.connectToDatabase();
 
-		// Bước 2: crawl data từ web về
+		// Bước 2: Crawl data từ web về
+		Crawler crawler = new Crawler();
+		crawler.crawlLotteryData("ket_qua_xo_so_t9.csv", "01-09-2024", "30-09-2024");
 
-		// Bước 3: Load stagging
+		// Bước 3: Load staging
+		// Implement logic here
 
 		// Bước 4: Transform data
+		// Implement logic here
 
-		// Bước 5: Khởi tạo giao diện người dùng để hiển thị kết quả xổ số
+		// Bước 5: Hiển thị kết quả lên giao diện GUI
 		LotteryResultGUI gui = new LotteryResultGUI();
 		gui.createAndShowGUI();
 	}
