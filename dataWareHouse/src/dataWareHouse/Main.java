@@ -1,11 +1,16 @@
 package dataWareHouse;
 
+import java.io.IOException;
 import java.sql.SQLException;
 
 import javax.swing.SwingUtilities;
 
 import ult.DatabaseManager;
+
 import ult.Logger;
+
+
+import dataWareHouse.*;
 
 public class Main {
 
@@ -15,10 +20,10 @@ public class Main {
 		ETLData etl = new ETLData();
 		Logger log = new Logger();
 		// Bước 1: Kết nối đến cơ sở dữ liệu
-		DatabaseManager.connectToDatabase();
+//		DatabaseManager.connectToDatabase();
 
 		// Bước 2: crawl data từ web về
-
+		 crawlData();
 		// Bước 3: Load stagging
 		etl.setDateFormat();
 		// 3.1 load craw data staging
@@ -73,7 +78,14 @@ public class Main {
 		
 
 		// Bước 5: Khởi tạo giao diện người dùng để hiển thị kết quả xổ số
-		LotteryResultGUI gui = new LotteryResultGUI();
-		gui.createAndShowGUI();
+//		LotteryResultGUI gui = new LotteryResultGUI();
+//		gui.createAndShowGUI();
 	}
+	private static void crawlData() {
+        try {
+            Crawler.crawlAndSaveLotteryData();;
+        } catch (IOException e) {
+            System.out.println("Lỗi khi crawl data: " + e.getMessage());
+        }
+    }
 }
