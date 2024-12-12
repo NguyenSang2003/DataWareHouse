@@ -2,6 +2,7 @@ package dataWareHouse;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.lang.System.Logger;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -30,20 +31,20 @@ public class ETLData {
 			username = prop.getProperty("username");
 			password = prop.getProperty("password");
 			Path = prop.getProperty("pathData");
+			
 		} catch (IOException e) {
 			e.printStackTrace();
 			System.err.println("Failed to load configuration file.");
+			
 		}
 	}
 
-	// 4.1 connect database
 	public Connection getConnect() {
 
 		Connection conn = null;
 		try {
 			// Kết nối đến SQL Server
 			return DriverManager.getConnection(url, username, password);
-
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -66,10 +67,9 @@ public class ETLData {
 
 	}
 
-// load CrawData staging
-	public boolean loadCrawData_Staging(String Path) {
+// 3.1 load CrawData_Staging
+	public boolean loadCrawData_Staging() {
 		ETLData etl = new ETLData();
-		Path = "D:\\DataWareHouse\\Data\\ket_qua_xo_so_t8.csv";
 		Connection connection = null;
 		try {
 			connection = etl.getConnect();
@@ -88,7 +88,7 @@ public class ETLData {
 
 	}
 
-//	4. load Staging
+//	3.2 load craw data
 	public boolean loadCrawData() {
 		ETLData etl = new ETLData();
 		Connection connection = null;
@@ -109,7 +109,7 @@ public class ETLData {
 	}
 
 	
-//	4. load Staging
+//	3.3 load Staging
 	public boolean loadStaging() {
 		ETLData etl = new ETLData();
 		Connection connection = null;
@@ -127,8 +127,8 @@ public class ETLData {
 
 	}
 
-//	 load DimDate
-	public boolean loadDimDate() {
+//	 4.1 insert DimDate
+	public boolean insertDimDate() {
 		ETLData etl = new ETLData();
 		Connection connection = null;
 		try {
@@ -145,8 +145,8 @@ public class ETLData {
 
 	}
 
-// load DimLocation
-	public boolean loadDimLocation() {
+// 4.2 insert DimLocation
+	public boolean insertDimLocation() {
 		ETLData etl = new ETLData();
 		Connection connection = null;
 		try {
@@ -163,8 +163,8 @@ public class ETLData {
 
 	}
 
-// load DimDate
-	public boolean loadFactPrize() {
+// 4.3 insert FactPrize
+	public boolean insertFactPrize() {
 		ETLData etl = new ETLData();
 		Connection connection = null;
 		try {
@@ -215,7 +215,7 @@ public class ETLData {
 
 		// Load CrawData
 		System.out.println("Loading Craw Data...");
-		if (etl.loadCrawData_Staging(path)) {
+		if (etl.loadCrawData_Staging()) {
 			System.out.println("CrawData_Staging loaded successfully.");
 		} else {
 			System.err.println("Failed to load CrawData_Staging.");
@@ -239,7 +239,7 @@ public class ETLData {
 
 		// Load DimDate
 		System.out.println("Loading DimDate...");
-		if (etl.loadDimDate()) {
+		if (etl.insertDimDate()) {
 			System.out.println("DimDate loaded successfully.");
 		} else {
 			System.err.println("Failed to load DimDate.");
@@ -247,7 +247,7 @@ public class ETLData {
 
 		// Load DimLocation
 		System.out.println("Loading DimLocation...");
-		if (etl.loadDimLocation()) {
+		if (etl.insertDimLocation()) {
 			System.out.println("DimLocation loaded successfully.");
 		} else {
 			System.err.println("Failed to load DimLocation.");
@@ -255,7 +255,7 @@ public class ETLData {
 
 		// Load FactPrize
 		System.out.println("Loading FactPrize...");
-		if (etl.loadFactPrize()) {
+		if (etl.insertFactPrize()) {
 			System.out.println("FactPrize loaded successfully.");
 		} else {
 			System.err.println("Failed to load FactPrize.");
